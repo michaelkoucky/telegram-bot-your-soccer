@@ -1,4 +1,6 @@
 import os
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+import os
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
@@ -58,5 +60,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
-
