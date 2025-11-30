@@ -53,14 +53,10 @@ def main() -> None:
     # Grup için yeni üye yakalama
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, yeni_grup_uyesi))
 
-    # Kanal için yeni abone yakalama
-    # Sadece grup için yeni üye yakalama
-application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, yeni_grup_uyesi))
-
-
     logger.info("Bot Başlatıldı ve Komutları Dinliyor...")
     application.run_polling(poll_interval=1.0)
 
 if __name__ == '__main__':
     main()
+
 
