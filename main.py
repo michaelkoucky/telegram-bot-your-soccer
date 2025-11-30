@@ -14,10 +14,11 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     for member in update.message.new_chat_members:
         username = member.username if member.username else member.first_name
         await update.message.reply_text(
-            f"Hoşgeldin {username}, lütfen duyurular, Airdrop ödülleri ve tüm gelişmeleri "
-            f"takip edebilmek için @YourSoccerTokenOfficial kanalına katılın."
+            f"🎉 Hoşgeldin {username}!\n\n"
+            f"📢 Lütfen duyurular, 🎁 Airdrop ödülleri ve tüm gelişmeleri takip edebilmek için "
+            f"👉 @YourSoccerTokenOfficial kanalına katılın.\n\n"
+            f"⚽ Futbolun geleceğini birlikte şekillendirelim!"
         )
-
 # Basit komutlar
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("Merhaba! Ben YourSoccer karşılama botuyum.")
@@ -40,3 +41,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
