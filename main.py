@@ -1,42 +1,42 @@
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+
 import os
 import logging
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# Yeni üye karşılama
+async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    for member in update.message.new_chat_members:
+        username = member.username if member.username else member.first_name
+        await update.message.reply_text(
+            f"Hoşgeldin {username}, lütfen duyurular, Airdrop ödülleri ve tüm gelişmeleri "
+            f"takip edebilmek için @YourSoccerTokenOfficial kanalına katılın."
+        )
+
+# Basit komutlar
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    await update.message.reply_html(
-        f"Merhaba {user.mention_html()}! Ben YourSoccer'ın karşılama botuyum."
-    )
+    await update.message.reply_text("Merhaba! Ben YourSoccer karşılama botuyum.")
 
 async def merhaba(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Hoş geldiniz! /start komutu ile başlayabilirsiniz.")
+    await update.message.reply_text("Merhaba! Futbolun dijital dünyasına hoş geldin ⚽")
 
-async def yeni_grup_uyesi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    for user in update.message.new_chat_members:
-        if user.is_bot:
-            await update.message.reply_text(f"{user.full_name} bir bot olarak katıldı.")
-        else:
-            await update.message.reply_text(f"Hoş geldin {user.full_name}! Burası YourSoccer grubu.")
-
-def main() -> None:
-    TOKEN = os.getenv("TELEGRAM_TOKEN")
-    if not TOKEN:
-        raise RuntimeError("TELEGRAM_TOKEN environment variable set edilmemiş!")
-
+def main():
     application = Application.builder().token(TOKEN).build()
+
+    # Komut handler’ları
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("merhaba", merhaba))
-    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, yeni_grup_uyesi))
+
+    # Yeni üye handler’ı
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
 
     logger.info("Bot Başlatıldı ve Komutları Dinliyor...")
-    application.run_polling(poll_interval=1.0)
+    application.run_polling()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
