@@ -1,5 +1,4 @@
 import os
-TOKEN = os.getenv("7563544719:AAEDroWVYRRF6kyyRFZL6nCa6ltOez5O78M")
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
@@ -24,11 +23,12 @@ async def merhaba(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 # Yeni üye gruba katıldığında
 async def yeni_grup_uyesi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     for user in update.message.new_chat_members:
-        await update.message.reply_text(
-            f"Hoş geldin {user.full_name}! Burası YourSoccer grubu."
-        )
+        if user.is_bot:
+            await update.message.reply_text(f"{user.full_name} bir bot olarak katıldı.")
+        else:
+            await update.message.reply_text(f"Hoş geldin {user.full_name}! Burası YourSoccer grubu.")
 
-# Kanalda yeni abone olduğunda (Telegram API'de 'chat_join_request' ile yakalanır)
+# Kanalda yeni abone olduğunda (sadece private kanallarda çalışır)
 async def yeni_kanal_abonesi(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if update.chat_join_request:
         user = update.chat_join_request.from_user
@@ -38,7 +38,11 @@ async def yeni_kanal_abonesi(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
 def main() -> None:
-    TOKEN = "7563544719:AAEDroWVYRRF6kyyRFZL6nCa6ltOez5O78M"
+    # Token'ı environment variable'dan çekiyoruz
+    TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+    if not TOKEN:
+        raise RuntimeError("TELEGRAM_TOKEN environment variable set edilmemiş!")
 
     application = Application.builder().token(TOKEN).build()
 
